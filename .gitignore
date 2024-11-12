@@ -1,7 +1,8 @@
 # Ignore virtual environments
 venv/
 myenv/
-.gpt_chatbot_env/
+gpt_chatbot_env/
+.venv/
 
 # Ignore Python cache files
 __pycache__/
