@@ -1,6 +1,17 @@
 from flask import Flask, request, jsonify
+import spacy
+import subprocess
+import sys
 
 app = Flask(__name__)
+
+# Ensure the 'en_core_web_sm' SpaCy model is installed
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    print("Model 'en_core_web_sm' not found. Installing...")
+    subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+    nlp = spacy.load("en_core_web_sm")
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -14,9 +25,15 @@ def chat():
         if not question:
             return jsonify({"error": "No question provided"}), 400
 
-        # Mock response without OpenAI API
-        answer = "This is a mock response. Replace this with actual AI logic when available."
-        return jsonify({"answer": answer})
+        # Process the question using SpaCy for NLP
+        doc = nlp(question)
+        entities = [{"text": ent.text, "label": ent.label_} for ent in doc.ents]
+        response = {
+            "original_text": question,
+            "entities": entities,
+            "tokens": [{"text": token.text, "lemma": token.lemma_, "pos": token.pos_} for token in doc]
+        }
+        return jsonify(response)
     
     except Exception as e:
         print("General Error:", str(e))
