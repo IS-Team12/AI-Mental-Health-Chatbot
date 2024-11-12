@@ -1,16 +1,15 @@
 from flask import Flask, request, jsonify
 import spacy
-import subprocess
-import sys
 
 app = Flask(__name__)
 
-# Ensure the 'en_core_web_sm' SpaCy model is installed
+# Load or download SpaCy model
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    print("Model 'en_core_web_sm' not found. Installing...")
-    subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+    # Download the model if not present
+    from spacy.cli import download
+    download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
 
 @app.route('/chat', methods=['POST'])
@@ -25,15 +24,18 @@ def chat():
         if not question:
             return jsonify({"error": "No question provided"}), 400
 
-        # Process the question using SpaCy for NLP
+        # Process question with SpaCy NLP
         doc = nlp(question)
-        entities = [{"text": ent.text, "label": ent.label_} for ent in doc.ents]
-        response = {
-            "original_text": question,
+        entities = [(ent.text, ent.label_) for ent in doc.ents]
+        tokens = [token.text for token in doc]
+
+        response_data = {
             "entities": entities,
-            "tokens": [{"text": token.text, "lemma": token.lemma_, "pos": token.pos_} for token in doc]
+            "tokens": tokens,
+            "original_question": question,
+            "message": "Processed with SpaCy NLP"
         }
-        return jsonify(response)
+        return jsonify(response_data)
     
     except Exception as e:
         print("General Error:", str(e))
