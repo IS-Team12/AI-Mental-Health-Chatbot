@@ -1,0 +1,15 @@
+# Ignore virtual environments
+venv/
+myenv/
+.gpt_chatbot_env/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore system files
+*.DS_Store
+*.log
+
+# Ignore IDE specific files
+.vscode/
