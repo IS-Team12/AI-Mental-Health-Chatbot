@@ -1,0 +1,19 @@
+User Table (Sample Data):
+User_ID	Username	Email	Password	Account_Type
+1	SarahM	sarah@example.com	******	Free
+2	JohnD	john.doe@example.com	******	Premium
+3	RachelK	rachelk@example.com	******	Free
+4	DavidS	david.s@example.com	******	Free
+Chat_Session Table (Sample Data):
+Session_ID	User_ID	Start_Time	End_Time	Chat_Log
+1	1	2024-10-05 09:00:00	2024-10-05 09:15:00	"Hi Sarah, how are you feeling today?"
+2	2	2024-10-05 10:00:00	2024-10-05 10:30:00	"Hello John, let’s work through your day"
+3	3	2024-10-06 14:00:00	2024-10-06 14:20:00	"Hi Rachel, how can I assist you today?"
+4	4	2024-10-06 15:00:00	2024-10-06 15:10:00	"Hi David, let’s talk about your mood"
+
+Emotion_Tracking Table (Sample Data):
+Emotion_ID	Session_ID	User_ID	Mood	Mood_Score	Timestamp
+1	1	1	Stressed	8	2024-10-05 09:10:00
+2	1	1	Calm	4	2024-10-05 09:12:00
+3	2	2	Anxious	9	2024-10-05 10:15:00
+4	3	3	Happy	2	2024-10-06 14:05:00
