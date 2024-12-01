@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="/static/styling.css">
+</head>
+<body>
+    <div class="dark-mode-toggle-container">
+        <label class="switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="slider round"></span>
+        </label>
+        <span class="dark-mode-label">Dark Mode</span>
+    </div>
+    <div class="container">
+        <h1>Details please!</h1>
+        <form action="/chatbot">
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" name="first-name" required><br>
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" name="last-name" required><br>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required><br>
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select><br>
+            <label for="zip-code">Zip Code:</label>
+            <input type="text" id="zip-code" name="zip-code" required><br>
+            <button type="submit" class="btn">Continue to Chatbot</button>
+        </form>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>

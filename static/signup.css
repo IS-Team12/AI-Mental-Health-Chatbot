@@ -1,0 +1,94 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fce4ec;
+    color: #333;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: #333;
+    color: #fce4ec;
+}
+
+/* Container Styling */
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Button Styling */
+.continue-btn {
+    background-color: #f06292;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.continue-btn:hover {
+    background-color: #ec407a;
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+.dark-mode-toggle input {
+    margin-right: 5px;
+}
+
+/* Adjustments for Dark Mode */
+body.dark-mode .container {
+    background-color: #444;
+    color: white;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+    background-color: #555;
+    color: white;
+    border: 1px solid #888;
+}
+
+body.dark-mode .continue-btn {
+    background-color: #ec407a;
+    color: #fff;
+}

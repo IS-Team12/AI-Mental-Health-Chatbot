@@ -3,133 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindBot - Your Mental Health Companion</title>
-    <link rel="stylesheet" href="static/style.css">
+    <title>MindBot</title>
+    <link rel="stylesheet" href="static/styling.css">
+    <script defer src="static/script.js"></script>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="animated-background">
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle-container">
+        <label class="dark-mode-label" for="dark-mode-toggle">Dark Mode</label>
+        <label class="switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="slider"></span>
+        </label>
     </div>
 
-    <!-- Welcome Screen -->
-    <div id="welcomeScreen" class="welcome-screen">
-        <div class="welcome-content glass-morphism">
-            <div class="bot-avatar">
-                <div class="avatar-circle">🤖</div>
-                <div class="avatar-pulse"></div>
-            </div>
-            <h1>Welcome to MindBot</h1>
-            <p>Your personal mental health companion</p>
-            <button onclick="startChat()" class="pulse-button">
-                Begin Your Journey ➜
-            </button>
+    <!-- Main Container -->
+    <div class="container">
+        <h1>Welcome to MindBot</h1>
+        <p>Your personal mental health companion.</p>
+        
+        <!-- Buttons -->
+        <div class="button-container">
+            <a href="https://www.csulb.edu/student-affairs/counseling-and-psychological-services" target="_blank" class="button">CSULB Users</a>
+            <a href="/signup" class="button">Non-CSULB Users</a>
         </div>
     </div>
-
-    <!-- Main Chat Interface -->
-    <div id="chatInterface" class="chat-interface hidden">
-        <!-- Sidebar -->
-        <div class="sidebar glass-morphism">
-            <div class="user-profile">
-                <div class="user-avatar">👤</div>
-                <div class="user-info">
-                    <h3 id="userName">Guest</h3>
-                    <p class="mood-status" id="currentMood">How are you feeling?</p>
-                </div>
-            </div>
-
-            <!-- Mood Tracker -->
-            <div class="mood-tracker">
-                <h3>Track Your Mood</h3>
-                <div class="mood-options">
-                    <div class="mood-option" onclick="selectMood('happy', '😊')">😊
-                        <span>Happy</span>
-                    </div>
-                    <div class="mood-option" onclick="selectMood('calm', '😌')">😌
-                        <span>Calm</span>
-                    </div>
-                    <div class="mood-option" onclick="selectMood('neutral', '😐')">😐
-                        <span>Neutral</span>
-                    </div>
-                    <div class="mood-option" onclick="selectMood('sad', '😔')">😔
-                        <span>Sad</span>
-                    </div>
-                    <div class="mood-option" onclick="selectMood('anxious', '😰')">😰
-                        <span>Anxious</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mood History -->
-            <div class="mood-history">
-                <h3>Mood History</h3>
-                <div id="moodChart" class="mood-chart"></div>
-            </div>
-        </div>
-
-        <!-- Main Chat Area -->
-        <div class="main-chat glass-morphism">
-            <div class="chat-header">
-                <div class="bot-status">
-                    <div class="status-indicator"></div>
-                    MindBot
-                </div>
-                <div class="chat-actions">
-                    <button onclick="toggleTheme()" class="theme-toggle">🌙</button>
-                    <button onclick="clearChat()" class="clear-chat">🗑️</button>
-                </div>
-            </div>
-
-            <div class="chat-messages" id="chatMessages">
-                <!-- Welcome Message -->
-                <div class="message bot-message">
-                    <div class="message-avatar">🤖</div>
-                    <div class="message-content">
-                        <div class="message-text">
-                            Hi! I'm MindBot, your mental health companion. How are you feeling today?
-                        </div>
-                        <div class="message-time">Just now</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Responses -->
-            <div class="quick-responses" id="quickResponses">
-                <button onclick="sendQuickResponse('I need help managing anxiety')">Managing Anxiety</button>
-                <button onclick="sendQuickResponse('I'm feeling down')">Feeling Down</button>
-                <button onclick="sendQuickResponse('I need stress relief')">Stress Relief</button>
-                <button onclick="sendQuickResponse('I want to talk')">Just Talk</button>
-            </div>
-
-            <!-- Chat Input -->
-            <div class="chat-input-container">
-                <form id="chatForm" class="chat-form">
-                    <div class="input-wrapper">
-                        <textarea 
-                            id="messageInput" 
-                            placeholder="Type your message here..."
-                            rows="1"
-                            autofocus
-                        ></textarea>
-                        <button type="submit" class="send-button">➤</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Resources Panel -->
-        <div class="resources-panel glass-morphism">
-            <h3>Helpful Resources</h3>
-            <div class="resources-content" id="resourcesContent">
-                <!-- Resources will be dynamically added here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="static/script.js"></script>
 </body>
 </html>

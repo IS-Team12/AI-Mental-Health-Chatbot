@@ -1,16 +1,79 @@
-# Ignore virtual environments
+# Virtual Environments
 venv/
 myenv/
 gpt_chatbot_env/
 .venv/
+env/
+.env/
 
-# Ignore Python cache files
+# Python Cache Files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
 
-# Ignore system files
-*.DS_Store
+# System Files
+.DS_Store
 *.log
+*.swp
+Thumbs.db
+.env
+.env.local
+.env.*.local
 
-# Ignore IDE specific files
+# IDE Specific Files
 .vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.vs/
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# User Data and Sensitive Information
+users.json
+chat_logs/
+mood_history/
+*.pem
+*.key
+credentials.json
+config.json
+
+# Dependency Directories
+node_modules/
+bower_components/
+
+# Distribution / Packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Test Coverage
+coverage/
+.coverage
+htmlcov/
+
+# Logging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temp Files
+.temp/
+.tmp/
+*.tmp
+*.bak
+
+# Local Development
+docker-compose.override.yml
+*.local
+
+# Documentation
+docs/_build/
+site/
