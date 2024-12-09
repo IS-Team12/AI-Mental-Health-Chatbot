@@ -1,0 +1,11 @@
+[
+    {
+        "user_message": "hi",
+        "bot_reply": "Hello there!"
+    },
+    {
+        "user_message": "how are you",
+        "bot_reply": "how are you sure you're not being followed?\"\n\nShe turned to look her over. \"I think this is good until I think you get the idea.\"\n\nHe nodded and looked at her curiously. \"Don't worry about the money"
+    }
+]{"user_message": "Hi", "bot_response": "Hello! How are you feeling today?", "sentiment": 0.0}
+{"user_message": "How are you?", "bot_response": "That's interesting. Could you elaborate?", "sentiment": 0.0}

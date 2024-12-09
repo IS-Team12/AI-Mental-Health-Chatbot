@@ -71,14 +71,60 @@ input:checked + .slider:before {
     transform: translateX(14px);
 }
 
-/* Form Container */
+/* Home Page Styles */
+.home-container {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.home-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.home-description {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.home-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.home-button {
+    text-decoration: none;
+    padding: 15px 25px;
+    font-size: 16px;
+    color: white;
+    background-color: #2196F3;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.home-button:hover {
+    background-color: #1976D2;
+}
+
+body.dark-mode .home-button {
+    background-color: #1E88E5;
+}
+
+body.dark-mode .home-button:hover {
+    background-color: #1565C0;
+}
+
+/* Signup Page Container */
 .container {
     background-color: white;
     padding: 20px;
     margin: 40px auto;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    max-width: 350px; /* Adjusted width for signup page */
     text-align: center;
     transition: all 0.4s ease;
 }
@@ -88,16 +134,35 @@ body.dark-mode .container {
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
-/* Form Elements */
+.form-title {
+    font-size: 22px; /* Reduced title size */
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Signup Page Input Containers */
+.form-row {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    text-align: left; 
+}
+
 input, select, button {
-    margin: 10px 0;
-    padding: 10px;
+    width: 100%; /* Ensures all elements (input, select, and button) have equal width */
+    padding: 12px; /* Adjusted padding for consistent spacing */
     border-radius: 5px;
     border: 1px solid #ddd;
-    width: 90%;
     background-color: #fff;
     color: #333;
+    font-size: 14px; /* Adjusted font size */
     transition: all 0.4s ease;
+    box-sizing: border-box; /* Ensures consistent box model for all elements */
 }
 
 body.dark-mode input, body.dark-mode select, body.dark-mode button {
@@ -111,62 +176,48 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 5px;
+    margin-top: 10px; /* Add consistent spacing between form fields and the button */
 }
 
 button:hover {
     background-color: #ff4a3a;
 }
 
-/* Header Styles */
-header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: inherit;
+input:focus, select:focus {
+    outline: none;
+    border: 1px solid #2196F3;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
 }
 
-body.dark-mode header {
-    background-color: #1e1e1e;
-}
-
-/* Button Styling */
-.user-button {
-    background-color: #ff6b6b;
+button {
+    background-color: #ff6f61;
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 16px;
     cursor: pointer;
-    margin: 10px 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
-.user-button:hover {
-    background-color: #ff5252;
+button:hover {
+    background-color: #ff4a3a;
 }
 
-body.dark-mode .user-button {
-    background-color: #ff5a5a;
-    color: #fff;
-}
-
-body.dark-mode .user-button:hover {
-    background-color: #ff4040;
-}
-
-/* Chatbot Styles */
+/* Chatbot Container */
 .chat-container {
     background-color: #f9f9f9;
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
+    max-width: 400px;
+    height: 400px;
     margin: 20px auto;
     overflow-y: auto;
-    height: 400px;
+    font-size: 14px;
 }
 
 body.dark-mode .chat-container {
@@ -174,55 +225,93 @@ body.dark-mode .chat-container {
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
+/* Chatbot Message Styling */
 .bot-message {
-    background-color: #ffe6e6;
+    background-color: #ffe6e6; /* Light pink background for bot messages */
+    color: #5a1a1a; /* Dark red text for bot messages */
     padding: 10px;
     border-radius: 15px;
     margin: 10px 0;
     text-align: left;
     max-width: 75%;
     word-wrap: break-word;
+    font-weight: bold; /* Makes bot messages visually distinct */
+    box-shadow: 0 2px 4px rgba(90, 26, 26, 0.2); /* Subtle shadow effect */
+    border-left: 4px solid #d32f2f; /* Adds a red border to highlight the bot's response */
 }
 
 body.dark-mode .bot-message {
-    background-color: #442222;
-    color: #fff;
+    background-color: #442222; /* Dark red background for bot messages in dark mode */
+    color: #ffa1a1; /* Light pink text for bot messages in dark mode */
+    border-left: 4px solid #ff6f61; /* Adjusted border color for dark mode */
+    box-shadow: 0 2px 4px rgba(255, 161, 161, 0.2); /* Subtle shadow effect */
 }
 
+/* User Message Styling */
 .user-message {
-    background-color: #e6ffe6;
+    background-color: #e6ffe6; /* Light green background for user messages */
+    color: #1a5a1a; /* Dark green text for user messages */
     padding: 10px;
     border-radius: 15px;
     margin: 10px 0;
     text-align: right;
     max-width: 75%;
     word-wrap: break-word;
+    font-size: 15px; /* Slightly increased font size for user messages */
+    box-shadow: 0 2px 4px rgba(26, 90, 26, 0.2); /* Subtle shadow effect */
+    border-right: 4px solid #2e7d32; /* Adds a green border to highlight the user's message */
 }
 
 body.dark-mode .user-message {
-    background-color: #224422;
-    color: #fff;
+    background-color: #224422; /* Dark green background for user messages in dark mode */
+    color: #a1ffa1; /* Light green text for user messages in dark mode */
+    border-right: 4px solid #66bb6a; /* Adjusted border color for dark mode */
+    box-shadow: 0 2px 4px rgba(161, 255, 161, 0.2); /* Subtle shadow effect */
 }
 
-/* Button Styles */
-.button-container {
+/* Input Area */
+.msger-inputarea {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
+    flex-direction: column; /* Stacks the input box and send button vertically */
+    gap: 10px;
+    margin-bottom: 10px; /* Adds space between input box and messages */
 }
 
-.button {
-    text-decoration: none;
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #ff6f61;
+.msger-input {
+    width: 100%; /* Makes input box span the full width */
+    padding: 12px; /* Adjusted padding for better visibility */
+    border: 1px solid #ddd;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
-.button:hover {
+body.dark-mode .msger-input {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+.msger-input:focus {
+    outline: none;
+    border: 1px solid #2196F3;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+/* Send Button */
+.msger-send-btn {
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end; /* Aligns the send button to the right */
+    width: 100%; /* Matches the width of the input box */
+}
+
+.msger-send-btn:hover {
     background-color: #ff4a3a;
 }

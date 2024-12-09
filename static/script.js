@@ -63,6 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Handle Enter Key Press for Sending Message
+    messageInput?.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            const userMessage = messageInput.value.trim();
+
+            if (userMessage) {
+                displayUserMessage(userMessage);
+                processUserMessage(userMessage);
+                messageInput.value = '';
+            }
+        }
+    });
+
     // Display User Message
     function displayUserMessage(message) {
         const userMessageElement = document.createElement('div');
@@ -72,18 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
     }
 
-    // Process User Message and Simulate Bot Response
+    // Process User Message and Fetch Bot Response
     function processUserMessage(message) {
-        fetch('/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message }),
-        })
-            .then(response => response.json())
+        fetch(`/get?msg=${encodeURIComponent(message)}`) // Pass message as a query parameter
+            .then(response => response.text())
             .then(data => {
-                displayBotMessage(data.reply);
+                displayBotMessage(data);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -91,13 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-// Display Bot Message
+    // Display Bot Message
     function displayBotMessage(message) {
         const botMessageElement = document.createElement('div');
         botMessageElement.classList.add('bot-message');
-        botMessageElement.innerHTML = message; // Render HTML in the message
+        botMessageElement.textContent = message; // Ensure safe plain text rendering
         chatContainer.appendChild(botMessageElement);
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
-}
-
+    }
 });

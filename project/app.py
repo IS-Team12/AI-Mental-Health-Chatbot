@@ -1,40 +1,8 @@
 from flask import Flask, render_template, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from textblob import TextBlob
 import random
 
 app = Flask(__name__)
-
-# Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/AI_Mental_Health_Chatbot_DB'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-# Database Models
-class User(db.Model):
-    __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50))
-    email = db.Column(db.String(100))
-    password = db.Column(db.String(50))
-    account_type_id = db.Column(db.Integer, db.ForeignKey('account_type.account_type_id'))
-
-class ChatSession(db.Model):
-    __tablename__ = 'chat_session'
-    session_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    start_time = db.Column(db.DateTime)
-    end_time = db.Column(db.DateTime)
-    chat_log = db.Column(db.Text)
-
-class EmotionTracking(db.Model):
-    __tablename__ = 'emotion_tracking'
-    emotion_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('chat_session.session_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    mood = db.Column(db.String(50))
-    mood_score = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime)
 
 # Greeting Keywords and Responses
 GREETING_KEYWORDS = ["hi", "hello", "hey", "greetings", "what's up", "howdy"]
@@ -77,36 +45,38 @@ RESOURCES = [
     {"title": "Substance Abuse and Mental Health Services Administration (SAMHSA)", "link": "https://www.samhsa.gov/"},
     {"title": "Anxiety and Depression Association of America", "link": "https://adaa.org/"},
     {"title": "National Institute of Mental Health", "link": "https://www.nimh.nih.gov/"},
-    {"title": "The Trevor Project", "link": "https://www.thetrevorproject.org/"},
+    {"title": "The Trevor Project", "link": "https://www.thetrevorproject.org/"}
 ]
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/signup', methods=['POST'])
+@app.route('/signup')
 def signup():
-    data = request.json
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-    account_type_id = data.get('account_type_id', 1)  # Default to Free account type
-
-    new_user = User(username=username, email=email, password=password, account_type_id=account_type_id)
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({"message": "Signup successful", "user_id": new_user.user_id})
+    return render_template('signup.html')
 
 @app.route('/chatbot')
 def chatbot():
-    greeting = random.choice(GREETING_RESPONSES)
+    # Generate a random greeting
+    greetings = [
+        "Hi there! How's your day going?",
+        "Hello! What's on your mind today?",
+        "Hey! How are you feeling right now?",
+        "Hi! What can I help you with today?",
+        "Hello! How has your day been so far?",
+        "Hi there! What's been happening lately?",
+        "Hello! How are you doing today?",
+        "Hey there! What’s been on your mind?",
+        "Hi! How’s everything going?",
+        "Hello! Let’s talk—what’s on your mind?"
+    ]
+    greeting = random.choice(greetings)
     return render_template('chatbot.html', greeting=greeting)
 
 @app.route('/chat', methods=['POST'])
 def chat():
     user_message = request.json.get('message').strip().lower()
-    user_id = request.json.get('user_id')  # Fetch user_id if available
 
     # Define strong negative emotion keywords
     negative_emotion_keywords = ["depressed", "sad", "anxious", "lonely", "hopeless", "angry", "worried"]
@@ -132,8 +102,6 @@ def chat():
             "I hear you, and I want to help. Can you tell me more about what you’re going through?",
             "Please remember, you're not alone. I'm here to help and listen."
         ])
-        if user_id:
-            save_chat_session(user_id, user_message, reply)
         return jsonify({"reply": reply})
 
     # Check if the message is a greeting
@@ -189,18 +157,7 @@ def chat():
 
         reply = random.choice(responses)
 
-    # Save chat session to the database
-    if user_id:
-        save_chat_session(user_id, user_message, reply)
-
     return jsonify({"reply": reply})
 
-def save_chat_session(user_id, user_message, reply):
-    new_session = ChatSession(user_id=user_id, chat_log=f"User: {user_message}\nBot: {reply}")
-    db.session.add(new_session)
-    db.session.commit()
-
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Create tables if not already created
     app.run(debug=True)
