@@ -1,10 +1,10 @@
 # Virtual Environments
-venv/
-myenv/
-gpt_chatbot_env/
-.venv/
+**venv/
+**myenv/
+**gpt_chatbot_env/
+**.venv/
 env/
-.env/
+**.env/
 
 # Python Cache Files
 __pycache__/
