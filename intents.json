@@ -349,7 +349,7 @@
           "i am good for nothing."
       ],
       "responses": [
-          "don't ever think you cannot achieve what you want.you are capable of reaching your goals.here is a quote for you everything you can imagine is real."
+          "Don't ever think you cannot achieve what you want.you are capable of reaching your goals.here is a quote for you everything you can imagine is real."
       ]
   },
   {
@@ -358,7 +358,7 @@
           "i am feeling stressed lately"
       ],
       "responses": [
-          "my research says that music is the best way to calm yourself.so visit the link and listen to your favourite music.it will definitely cheer you up \"https://www.spotify.com\""
+          "My research says that music is the best way to calm yourself. So visit the link and listen to your favorite music.it will definitely cheer you up \"https://www.spotify.com\""
       ]
   },
   {
@@ -376,7 +376,7 @@
           "i am afraid i will fail again"
       ],
       "responses": [
-          "Failure is the stepping stone towards success.never fear failure.your hardwork and determination will help you reach your goal."
+          "Failure is the stepping stone towards success.never fear failure. Your hardwork and determination will help you reach your goal."
       ]
   },
   {
@@ -776,10 +776,62 @@
       ]
   },
   {
-      "tag": "bullying",
-      "patterns": ["I am getting bullied", "Someone is bullying me", "I feel bullied"],
-      "responses": ["I'm sorry to hear that. Remember, you're not alone, and help is available.", "Would you like to talk more about what's happening?"]
+    "tag": "bullying",
+    "patterns": [
+        "I am getting bullied",
+        "Someone is bullying me",
+        "I feel bullied",
+        "I am being harassed",
+        "They are picking on me",
+        "I feel unsafe due to bullying",
+        "I am bullied"
+    ],
+    "responses": [
+        "I'm sorry to hear that. Remember, you're not alone, and help is available.",
+        "Would you like to talk more about what's happening?",
+        "It's important to speak up about bullying. Do you want me to assist you in finding support?"
+    ]
+  },
+  {
+    "tag": "self-improvement",
+    "patterns": ["How can I improve myself?", "I want to be better", "Can you help me become better?"],
+    "responses": ["Self-improvement starts with self-awareness. Identify areas you want to grow in, set goals, and take small, consistent steps forward.", "You're already on the right path by seeking growth. What specific area would you like to work on?"]
+  },
+  {
+    "tag": "overthinking",
+    "patterns": ["I can't stop overthinking", "My thoughts are overwhelming me", "I feel stuck in my mind"],
+    "responses": ["Overthinking can be exhausting. Try grounding techniques like focusing on your breath or writing down your thoughts to organize them.", "Take a moment to breathe and focus on the present. What is something simple you can do right now to feel better?"]
+  },
+  {
+    "tag": "motivation",
+    "patterns": ["I feel unmotivated", "I can't get myself to work", "I need motivation"],
+    "responses": ["You're doing better than you think. Start small and celebrate small wins.", "Motivation often follows action. Pick one small task and begin. You've got this!"]
+  },
+  {
+    "tag": "boundaries",
+    "patterns": ["I find it hard to say no", "How can I set boundaries?", "People take advantage of me"],
+    "responses": ["Setting boundaries is a skill. Start with clear communication and stick to what feels right for you.", "Remember, saying no to others is saying yes to your well-being. Practice small steps in asserting yourself."]
+  },
+  {
+    "tag": "crisis",
+    "patterns": [
+      "I want to talk",
+      "I want to die",
+      "I want to jump",
+      "I want to commit a murder",
+      "I want to suicide",
+      "I am feeling suicidal",
+      "I feel like harming myself",
+      "I can't handle this anymore",
+      "I want to hurt someone"
+    ],
+    "responses": [
+      "I'm really sorry to hear you're feeling this way. Please consider calling the National Suicide Prevention Lifeline at 1-800-273-TALK (8255) or 988. You're not alone, and there are people who want to help you.",
+      "It’s okay to feel overwhelmed. Please reach out to the Suicide and Crisis Lifeline at 988 or 1-800-273-TALK (8255). They are available 24/7 to support you.",
+      "I'm here to help, but it's important to talk to someone trained to provide support. Please call the National Suicide Prevention Lifeline at 1-800-273-8255 or 988."
+    ]
   }
   
-]
+
+  ]
 }  
