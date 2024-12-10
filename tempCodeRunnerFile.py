@@ -1,293 +1,132 @@
-from flask import Flask, render_template, request, jsonify, session
-from textblob import TextBlob
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from flask import Flask, render_template, request, redirect, url_for
 import nltk
+from nltk.stem import WordNetLemmatizer
+import numpy as np
+import pickle
 import json
 import random
-import logging
-from datetime import datetime, timedelta
-import re
-from collections import defaultdict
+from keras.models import load_model
+from flask_sqlalchemy import SQLAlchemy
+from database import db  # Import db from database.py
+from signup import SignupInfo  # Import SignupInfo model
 
-# Download required NLTK data
-nltk.download('vader_lexicon')
-nltk.download('punkt')
-nltk.download('stopwords')
-
+# Initialize Flask app
 app = Flask(__name__)
-print(__name__)
-# app.secret_key = 'your-secret-key-here'  # Change this in production
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# Configure SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Load configuration data
-try:
-    with open('states.json', 'r', encoding='utf-8') as f:
-        config = json.load(f)
-except Exception as e:
-    logger.error(f"Error loading configuration: {e}")
-    raise
+# Initialize database
+db.init_app(app)
 
-class UserManager:
-    def __init__(self):
-        self.users = {}
-        self.mood_history = defaultdict(list)
+# Load necessary files for chatbot
+lemmatizer = WordNetLemmatizer()
+model = load_model('model.h5')  # Trained chatbot model
+intents = json.loads(open('intents.json').read())
+words = pickle.load(open('texts.pkl', 'rb'))
+classes = pickle.load(open('labels.pkl', 'rb'))
 
-    def register_user(self, user_data):
-        user_id = f"user_{len(self.users) + 1}"
-        self.users[user_id] = {
-            'details': user_data,
-            'created_at': datetime.now(),
-            'last_active': datetime.now()
-        }
-        return user_id
+def clean_up_sentence(sentence):
+    sentence_words = nltk.word_tokenize(sentence)
+    sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
+    return sentence_words
 
-    def update_last_active(self, user_id):
-        if user_id in self.users:
-            self.users[user_id]['last_active'] = datetime.now()
+def bow(sentence, words):
+    sentence_words = clean_up_sentence(sentence)
+    bag = [0] * len(words)
+    for s in sentence_words:
+        for i, w in enumerate(words):
+            if w == s:
+                bag[i] = 1
+    return np.array(bag)
 
-    def get_user(self, user_id):
-        return self.users.get(user_id)
+def predict_class(sentence, model):
+    p = bow(sentence, words)
+    print(f"Bag of Words: {p}")
+    res = model.predict(np.array([p]))[0]
+    print(f"Prediction Results: {res}")
+    ERROR_THRESHOLD = 0.25
+    results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
+    results.sort(key=lambda x: x[1], reverse=True)
+    return [{"intent": classes[r[0]], "probability": str(r[1])} for r in results]
 
-    def add_mood(self, user_id, mood_data):
-        self.mood_history[user_id].append({
-            'mood': mood_data['mood'],
-            'timestamp': datetime.now(),
-            'value': mood_data['value']
-        })
 
-    def get_mood_history(self, user_id, days=7):
-        cutoff = datetime.now() - timedelta(days=days)
-        return [mood for mood in self.mood_history[user_id] 
-                if mood['timestamp'] > cutoff]
+def get_response(ints, intents_json, user_context=None):
+    if ints:
+        tag = ints[0]['intent']
+        list_of_intents = intents_json['intents']
+        for i in list_of_intents:
+            if i['tag'] == tag:
+                response = random.choice(i['responses'])
+                if "{name}" in response and user_context and "name" in user_context:
+                    response = response.replace("{name}", user_context["name"])
+                return response
+    return "Sorry, I didn't understand that."
 
-class ResponseGenerator:
-    def __init__(self, config):
-        self.config = config
-        self.sia = SentimentIntensityAnalyzer()
-        
-    def analyze_sentiment(self, text):
-        scores = self.sia.polarity_scores(text)
-        return {
-            'compound': scores['compound'],
-            'sentiment': 'positive' if scores['compound'] > 0.05 
-                        else 'negative' if scores['compound'] < -0.05 
-                        else 'neutral'
-        }
-    
-    def detect_emergency(self, text):
-        emergency_keywords = [
-            "suicide", "kill myself", "end my life", "don't want to live",
-            "want to die", "hurting myself", "self harm"
-        ]
-        return any(keyword in text.lower() for keyword in emergency_keywords)
 
-    def generate_response(self, message, user_data=None, mood=None):
-        # Check for emergency situations first
-        if self.detect_emergency(message):
-            return self.generate_emergency_response()
+def chatbot_response(msg):
+    res = get_response(predict_class(msg, model), intents)
+    return res
 
-        # Analyze sentiment
-        sentiment = self.analyze_sentiment(message)
-        
-        # Generate appropriate response based on content and sentiment
-        if "anxiety" in message.lower() or "anxious" in message.lower():
-            return self.generate_themed_response("anxiety")
-        elif "depress" in message.lower() or "sad" in message.lower():
-            return self.generate_themed_response("depression")
-        elif "stress" in message.lower():
-            return self.generate_themed_response("stress")
-        elif sentiment['sentiment'] == 'positive':
-            return self.generate_themed_response("positive")
-        else:
-            return self.generate_themed_response("neutral")
-
-    def generate_emergency_response(self):
-        return {
-            'response': (
-                "I'm concerned about what you're saying. Remember, you're not alone. "
-                "Would you like to talk to someone right now? "
-                "The National Crisis Hotline (988) is available 24/7."
-            ),
-            'resources': self.config['emergency']['hotlines'],
-            'type': 'emergency',
-            'priority': 'high'
-        }
-
-    def generate_themed_response(self, theme):
-        responses = self.config['chatbot']['responses'].get(theme, 
-                    self.config['chatbot']['responses']['greeting'])
-        return {
-            'response': random.choice(responses),
-            'type': theme
-        }
-
-# Initialize managers
-user_manager = UserManager()
-response_generator = ResponseGenerator(config)
-
-@app.route('/')
+@app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/register-user', methods=['POST'])
-def register_user():
-    try:
-        data = request.get_json()
-        
-        # Validate required fields
-        required_fields = ['firstName', 'lastName', 'age', 'gender', 'state', 'zipCode']
-        if not all(field in data for field in required_fields):
-            return jsonify({
-                'success': False,
-                'message': 'Missing required fields'
-            }), 400
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        # Collect user input from the form
+        first_name = request.form.get("first-name")
+        last_name = request.form.get("last-name")
+        age = request.form.get("age")
+        gender = request.form.get("gender")
+        zip_code = request.form.get("zip-code")
 
-        # Validate age
-        age = int(data['age'])
-        if not (13 <= age <= 100):
-            return jsonify({
-                'success': False,
-                'message': 'Age must be between 13 and 100'
-            }), 400
-
-        # Validate ZIP code
-        if not re.match(r'^\d{5}$', data['zipCode']):
-            return jsonify({
-                'success': False,
-                'message': 'Invalid ZIP code format'
-            }), 400
-
-        # Register user
-        user_id = user_manager.register_user(data)
-        session['user_id'] = user_id
-
-        return jsonify({
-            'success': True,
-            'user_id': user_id
-        })
-
-    except Exception as e:
-        logger.error(f"Error registering user: {e}")
-        return jsonify({
-            'success': False,
-            'message': 'Internal server error'
-        }), 500
-
-@app.route('/chat', methods=['POST'])
-def chat():
-    try:
-        data = request.get_json()
-        message = data.get('message')
-        user_id = session.get('user_id')
-
-        if not message:
-            return jsonify({
-                'success': False,
-                'message': 'No message provided'
-            }), 400
-
-        if not user_id:
-            return jsonify({
-                'success': False,
-                'message': 'User not authenticated'
-            }), 401
-
-        # Update user's last active timestamp
-        user_manager.update_last_active(user_id)
-
-        # Generate response
-        user_data = user_manager.get_user(user_id)
-        response_data = response_generator.generate_response(
-            message,
-            user_data=user_data,
-            mood=data.get('currentMood')
+        # Save to the SignupInfo table
+        new_signup = SignupInfo(
+            first_name=first_name,
+            last_name=last_name,
+            age=int(age) if age.isdigit() else None,
+            gender=gender,
+            zipcode=zip_code
         )
+        with app.app_context():
+            db.session.add(new_signup)
+            db.session.commit()
 
-        return jsonify({
-            'success': True,
-            **response_data
-        })
+        print(f"User {first_name} {last_name} signed up.")
 
-    except Exception as e:
-        logger.error(f"Error in chat endpoint: {e}")
-        return jsonify({
-            'success': False,
-            'message': 'Internal server error'
-        }), 500
+        # Redirect to chatbot page
+        return redirect(url_for("chatbot"))
 
-@app.route('/track-mood', methods=['POST'])
-def track_mood():
-    try:
-        data = request.get_json()
-        user_id = session.get('user_id')
+    return render_template("signup.html")
 
-        if not user_id:
-            return jsonify({
-                'success': False,
-                'message': 'User not authenticated'
-            }), 401
+@app.route("/chatbot")
+def chatbot():
+    return render_template("chatbot.html")
 
-        mood_data = {
-            'mood': data.get('mood'),
-            'value': data.get('value', 3),
-            'timestamp': datetime.now()
-        }
+@app.route("/get")
+def get_bot_response():
+    userText = request.args.get('msg')
+    if not userText:
+        return "Please provide a message."
 
-        user_manager.add_mood(user_id, mood_data)
-        mood_history = user_manager.get_mood_history(user_id)
+    print(f"User Input: {userText}")
+    predicted_intents = predict_class(userText, model)
+    print(f"Predicted Intents: {predicted_intents}")
 
-        return jsonify({
-            'success': True,
-            'mood_history': mood_history
-        })
+    response = chatbot_response(userText)
+    print(f"Bot Response: {response}")
+    return response
 
-    except Exception as e:
-        logger.error(f"Error tracking mood: {e}")
-        return jsonify({
-            'success': False,
-            'message': 'Internal server error'
-        }), 500
 
-@app.route('/get-resources', methods=['POST'])
-def get_resources():
-    try:
-        data = request.get_json()
-        mood = data.get('mood', 'neutral')
-        
-        # Get appropriate resources based on mood
-        resources = config.get('resources', {}).get(mood, [])
-        
-        return jsonify({
-            'success': True,
-            'resources': resources
-        })
 
-    except Exception as e:
-        logger.error(f"Error getting resources: {e}")
-        return jsonify({
-            'success': False,
-            'message': 'Internal server error'
-        }), 500
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return jsonify({
-        'success': False,
-        'message': 'Resource not found'
-    }), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    return jsonify({
-        'success': False,
-        'message': 'Internal server error'
-    }), 500
-
-if __name__ == '__main__':
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+    # Ensure tables are created before starting the app
+    with app.app_context():
+        db.create_all()
+    print("Database tables created.")
     app.run(debug=True)
+ 
