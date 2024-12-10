@@ -123,8 +123,10 @@ def get_bot_response():
 
 
 if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
     # Ensure tables are created before starting the app
     with app.app_context():
         db.create_all()
     print("Database tables created.")
     app.run(debug=True)
+ 
