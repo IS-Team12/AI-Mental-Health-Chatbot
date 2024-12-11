@@ -30,6 +30,7 @@ Thumbs.db
 
 # Database Files
 *.db
+!instance/app.db
 *.sqlite
 *.sqlite3
 

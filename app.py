@@ -7,8 +7,8 @@ import json
 import random
 from keras.models import load_model
 from flask_sqlalchemy import SQLAlchemy
-from database import db  # Import db from database.py
-from signup import SignupInfo  # Import SignupInfo model
+from database import db  
+from signup import SignupInfo  
 
 # Initialize Flask app
 app = Flask(__name__)
